@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace MovieApi.Controllers
 {
@@ -21,10 +19,44 @@ namespace MovieApi.Controllers
             return Ok(await _context.Movie.ToListAsync());
         }
 
+        [HttpGet("searchByName")]
+        public async Task<ActionResult<Movie>> SearchName(string name)
+        {
+            var movie = await _context.Movie.Where(b => b.Title == name).FirstOrDefaultAsync();
+            return Ok(movie);
+        }
+        [HttpGet("searchByCategory")]
+        public async Task<ActionResult<List<Movie>>> SearchCategory(string category)
+        {
+            var movies = await _context.Movie.Where(b => b.Categories.Contains(category)).ToListAsync();
+            return Ok(movies);
+        }
+
+        [HttpGet("searchByDirector")]
+        public async Task<ActionResult<List<Movie>>> SearchDirector(string director)
+        {
+            var movies = await _context.Movie.Where(b => b.Director.Contains(director)).ToListAsync();
+            return Ok(movies);
+        }
+
+        [HttpGet("searchByActor")]
+        public async Task<ActionResult<List<Movie>>> SearchActor(string actor)
+        {
+            var movie = await _context.Movie.Where(b => b.Cast.Contains(actor)).ToListAsync();
+            return Ok(movie);
+        }
+
+        [HttpGet("searchByReleaseYear")]
+        public async Task<ActionResult<List<Movie>>> SearchReleaseYear(string releaseYear)
+        {
+            var movie = await _context.Movie.Where(b => b.ReleaseYear.Equals(releaseYear)).ToListAsync();
+            return Ok(movie);
+        }
+
         [HttpGet("id")]
         public async Task<ActionResult<Movie>> GetbyId(int id)
         {
-            var movie =  await _context.Movie.FindAsync(id);
+            var movie = await _context.Movie.FindAsync(id);
             if (movie == null)
                 return BadRequest("Movie not found");
             return Ok(movie);
